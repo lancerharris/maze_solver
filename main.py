@@ -1,22 +1,24 @@
+from maze import Maze
 import window
-import random
 
 def main():
     win = window.Window(800, 600)
-    point1 = window.Point(10, 10)
-    point2 = window.Point(100, 100)
-    point3 = window.Point(100, 10)
-    point4 = window.Point(200, 100)
-    point5 = window.Point(200, 10)
-    point6 = window.Point(300, 100)
-    cell1 = window.Cell(point1, point2, win)
-    cell2 = window.Cell(point3, point4, win)
-    cell3 = window.Cell(point5, point6, win)
-    cell1.draw("black")
-    cell2.draw("black")
-    cell3.draw("black")
-    cell1.draw_move(cell2)
-    cell2.draw_move(cell3, undo=True)
+    x1 = 50
+    y1 = 50
+    num_rows = 10
+    num_cols = 14
+    cell_size_x = 50
+    cell_size_y = 50
+    maze = Maze(
+        x1,
+        y1,
+        num_rows,
+        num_cols,
+        cell_size_x,
+        cell_size_y,
+        win,
+    )
+    maze._create_cells()
     win.wait_for_close()
 
 if __name__ == "__main__":
