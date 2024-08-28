@@ -4,16 +4,16 @@ class Window:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.__root = Tk()
-        self.__root.title = "first window"
+        self._root = Tk()
+        self._root.title = "first window"
         self.canvas = Canvas()
         self.canvas.pack()
         self.running = False
-        self.__root.protocol("WM_DELETE_WINDOW", self.close)
+        self._root.protocol("WM_DELETE_WINDOW", self.close)
 
     def redraw(self):
-        self.__root.update_idletasks()
-        self.__root.update()
+        self._root.update_idletasks()
+        self._root.update()
 
     def wait_for_close(self):
         self.running = True
@@ -40,3 +40,34 @@ class Line:
 
     def draw(self, canvas, fill_color):
         canvas.create_line(self.x1, self.y1, self.x2, self.y2, fill=fill_color, width = 2)
+
+class Cell:
+    def __init__(self, top_left_point, top_right_point, win):
+        self._x1 = top_left_point.x
+        self._y1 = top_left_point.y
+        self._x2 = top_right_point.x
+        self._y2 = top_right_point.y
+        self._win = win
+        self.has_left_wall = True
+        self.has_right_wall = True
+        self.has_bottom_wall = True
+        self.has_top_wall = True
+
+    def draw(self, fill_color):
+        top_left_point = Point(self._x1, self._y1)
+        top_right_point = Point(self._x2, self._y1)
+        bottom_left_point = Point(self._x1, self._y2)
+        bottom_right_point = Point(self._x2, self._y2)
+
+        if self.has_left_wall:
+            line = Line(top_left_point, bottom_left_point)
+            self._win.draw_line(line, fill_color)
+        if self.has_right_wall:
+            line = Line(top_right_point, bottom_right_point)
+            self._win.draw_line(line, fill_color)
+        if self.has_top_wall:
+            line = Line(top_left_point, top_right_point)
+            self._win.draw_line(line, fill_color)
+        if self.has_bottom_wall:
+            line = Line(bottom_left_point, bottom_right_point)
+            self._win.draw_line(line, fill_color)
