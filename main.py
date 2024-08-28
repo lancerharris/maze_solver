@@ -1,8 +1,8 @@
 from maze import Maze
-import window
+from graphics import Window
 
 def main():
-    win = window.Window(800, 600)
+    win = Window(800, 600)
     x1 = 50
     y1 = 50
     num_rows = 10
