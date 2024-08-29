@@ -33,6 +33,8 @@ class Maze:
             for i in range(self._num_cols):
                 for j in range(self._num_rows):
                     self._draw_cell(i, j)
+        if self._cells:
+            self._break_entrance_and_exit()
 
     def _draw_cell(self, i, j):
         if self._win is None:
@@ -47,6 +49,15 @@ class Maze:
         self._win.redraw()
         self._win._root.after(30)
 
+    def _break_entrance_and_exit(self):
+        top_left_cell = self._cells[0][0]
+        top_left_cell.has_top_wall = False
+        bottom_right_cell = self._cells[self._num_cols - 1][self._num_rows - 1]
+        bottom_right_cell.has_bottom_wall = False
+
+        if self._win:
+            top_left_cell.draw("black")
+            bottom_right_cell.draw("black")
 
 class Cell:
     def __init__(self, top_left_point, bottom_right_point, win = None):
@@ -66,18 +77,15 @@ class Cell:
         bottom_left_point = Point(self._x1, self._y2)
         bottom_right_point = Point(self._x2, self._y2)
 
-        if self.has_left_wall:
-            line = Line(top_left_point, bottom_left_point)
-            self._win.draw_line(line, fill_color)
-        if self.has_right_wall:
-            line = Line(top_right_point, bottom_right_point)
-            self._win.draw_line(line, fill_color)
-        if self.has_top_wall:
-            line = Line(top_left_point, top_right_point)
-            self._win.draw_line(line, fill_color)
-        if self.has_bottom_wall:
-            line = Line(bottom_left_point, bottom_right_point)
-            self._win.draw_line(line, fill_color)
+        left_color = fill_color if self.has_left_wall else "white"
+        right_color = fill_color if self.has_right_wall else "white"
+        top_color = fill_color if self.has_top_wall else "white"
+        bottom_color = fill_color if self.has_bottom_wall else "white"
+
+        self._win.draw_line(Line(top_left_point, bottom_left_point), left_color)
+        self._win.draw_line(Line(top_right_point, bottom_right_point), right_color)
+        self._win.draw_line(Line(top_left_point, top_right_point), top_color)
+        self._win.draw_line(Line(bottom_left_point, bottom_right_point), bottom_color)
 
     def draw_move(self, to_cell, undo=False):
         line_color = "red" if not undo else "gray"
@@ -85,4 +93,6 @@ class Cell:
         to_cell_center = Point((to_cell._x1 + to_cell._x2) / 2, (to_cell._y1 + to_cell._y2) / 2)
         line = Line(cell_center, to_cell_center)
         self._win.draw_line(line, line_color)
+
+
 
