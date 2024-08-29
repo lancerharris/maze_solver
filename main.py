@@ -19,7 +19,7 @@ def main():
         cell_size_y,
         win,
     )
-    maze._create_cells()
+
     win.wait_for_close()
 
 if __name__ == "__main__":
