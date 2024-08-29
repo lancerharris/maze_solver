@@ -1,3 +1,4 @@
+import random
 from graphics import Line, Point
 
 class Maze:
@@ -10,6 +11,7 @@ class Maze:
         cell_size_x,
         cell_size_y,
         win = None,
+        seed = None,
     ):
         self._x1 = x1
         self._y1 = y1
@@ -18,6 +20,8 @@ class Maze:
         self._cell_size_x = cell_size_x
         self._cell_size_y = cell_size_y
         self._win = win
+        if seed:
+            random.seed(seed)
         self._cells = []
         self._create_cells()
 
@@ -35,6 +39,7 @@ class Maze:
                     self._draw_cell(i, j)
         if self._cells:
             self._break_entrance_and_exit()
+            self._break_walls_r(0, 0)
 
     def _draw_cell(self, i, j):
         if self._win is None:
@@ -54,6 +59,38 @@ class Maze:
 
         self._draw_cell(0, 0)
         self._draw_cell(self._num_cols - 1, self._num_rows - 1)
+    
+    def _break_walls_r(self, i, j):
+        self._cells[i][j].visited = True
+        while True:
+            directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+            possible_next_cells = []
+            for direction in directions:
+                next_i = i + direction[0]
+                next_j = j + direction[1]
+                if next_i >= 0 and next_i < self._num_cols and next_j >= 0 and next_j < self._num_rows:
+                    if not self._cells[next_i][next_j].visited:
+                        possible_next_cells.append((next_i, next_j))
+            if not possible_next_cells:
+                self._draw_cell(i, j)
+                break
+            next_i, next_j = random.choice(possible_next_cells)
+            if i < next_i:
+                self._cells[i][j].has_right_wall = False
+                self._cells[next_i][next_j].has_left_wall = False
+            elif i > next_i:
+                self._cells[i][j].has_left_wall = False
+                self._cells[next_i][next_j].has_right_wall = False
+            elif j < next_j:
+                self._cells[i][j].has_bottom_wall = False
+                self._cells[next_i][next_j].has_top_wall = False
+            elif j > next_j:
+                self._cells[i][j].has_top_wall = False
+                self._cells[next_i][next_j].has_bottom_wall = False
+            self._draw_cell(i, j)
+            self._draw_cell(next_i, next_j)
+            self._break_walls_r(next_i, next_j)
+        
 
 class Cell:
     def __init__(self, top_left_point, bottom_right_point, win = None):
@@ -66,6 +103,7 @@ class Cell:
         self.has_right_wall = True
         self.has_bottom_wall = True
         self.has_top_wall = True
+        self.visited = False
 
     def draw(self, fill_color):
         top_left_point = Point(self._x1, self._y1)
