@@ -2,16 +2,17 @@ from maze import Maze
 from graphics import Window
 
 def main():
-    win = Window(800, 600)
-    x1 = 50
-    y1 = 50
+    margin = 50
     num_rows = 10
     num_cols = 14
-    cell_size_x = 50
-    cell_size_y = 50
+    screen_x = 800
+    screen_y = 600
+    cell_size_x = (screen_x - 2 * margin) / num_cols
+    cell_size_y = (screen_y - 2 * margin) / num_rows
+    win = Window(screen_x, screen_y)
     maze = Maze(
-        x1,
-        y1,
+        margin,
+        margin,
         num_rows,
         num_cols,
         cell_size_x,
