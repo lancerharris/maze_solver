@@ -35,11 +35,15 @@ class Maze:
                     self._draw_cell(i, j)
 
     def _draw_cell(self, i, j):
+        if self._win is None:
+            return
         self._cells[i][j].draw("black")
         if not (i == self._num_cols and j == self._num_rows) and self._win is not None:
             self._animate() 
     
     def _animate(self):
+        if self._win is None:
+            return
         self._win.redraw()
         self._win._root.after(30)
 
