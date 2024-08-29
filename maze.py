@@ -40,8 +40,7 @@ class Maze:
         if self._win is None:
             return
         self._cells[i][j].draw("black")
-        if not (i == self._num_cols and j == self._num_rows) and self._win is not None:
-            self._animate() 
+        self._animate() 
     
     def _animate(self):
         if self._win is None:
@@ -50,14 +49,11 @@ class Maze:
         self._win._root.after(30)
 
     def _break_entrance_and_exit(self):
-        top_left_cell = self._cells[0][0]
-        top_left_cell.has_top_wall = False
-        bottom_right_cell = self._cells[self._num_cols - 1][self._num_rows - 1]
-        bottom_right_cell.has_bottom_wall = False
+        self._cells[0][0].has_top_wall = False
+        self._cells[self._num_cols - 1][self._num_rows - 1].has_bottom_wall = False
 
-        if self._win:
-            top_left_cell.draw("black")
-            bottom_right_cell.draw("black")
+        self._draw_cell(0, 0)
+        self._draw_cell(self._num_cols - 1, self._num_rows - 1)
 
 class Cell:
     def __init__(self, top_left_point, bottom_right_point, win = None):
