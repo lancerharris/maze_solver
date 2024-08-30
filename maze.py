@@ -96,6 +96,45 @@ class Maze:
             for cel in col:
                 cel.visited = False
 
+    def solve(self):
+        self._solve_r(0, 0)
+
+    def _solve_r(self, i, j):
+        self._animate()
+        current_cell = self._cells[i][j]
+        current_cell.visited = True
+        
+        if i == self._num_cols - 1 and j == self._num_rows - 1:
+            return True
+        
+        directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+        for direction in directions:
+            next_i = i + direction[0]
+            next_j = j + direction[1]
+            if ( 
+                next_i < 0 or next_i >= self._num_cols or next_j < 0 or next_j >= self._num_rows
+                or self._cells[next_i][next_j].visited
+            ):
+                continue
+            
+            possible_next_cell = self._cells[next_i][next_j]
+
+            left_connection = next_i < i and current_cell.has_left_wall == False and possible_next_cell.has_right_wall == False
+            right_connection = next_i > i and current_cell.has_right_wall == False and possible_next_cell.has_left_wall == False
+            top_connection = next_j < j and current_cell.has_top_wall == False and possible_next_cell.has_bottom_wall == False
+            bottom_connection = next_j > j and current_cell.has_bottom_wall == False and possible_next_cell.has_top_wall == False
+
+            if left_connection or right_connection or top_connection or bottom_connection:
+                current_cell.draw_move(self._cells[next_i][next_j])
+                leads_to_end_cell = self._solve_r(next_i, next_j)
+                if leads_to_end_cell:
+                    return True
+                else:
+                    current_cell.draw_move(self._cells[next_i][next_j], undo=True)
+
+        return False
+        
+
 class Cell:
     def __init__(self, top_left_point, bottom_right_point, win = None):
         self._x1 = top_left_point.x
