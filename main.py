@@ -4,7 +4,7 @@ from graphics import Window
 def main():
     margin = 50
     num_rows = 10
-    num_cols = 14
+    num_cols = 12
     screen_x = 800
     screen_y = 600
     cell_size_x = (screen_x - 2 * margin) / num_cols
@@ -18,7 +18,9 @@ def main():
         cell_size_x,
         cell_size_y,
         win,
+        10
     )
+    maze.solve()
 
     win.wait_for_close()
 
